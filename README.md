@@ -1,2 +1,2 @@
 # ng-pagination
-Pagination module for AngularJS
+Pagination directive for AngularJS
