@@ -1,0 +1,41 @@
+{
+  "name": "ng-pagination",
+  "version": "1.0.0",
+  "description": "Pagination directive for AngularJS",
+  "main": "dist/ng-pagination.min.js",
+  "homepage": "https://github.com/FinalDevStudio/ng-pagination#readme",
+  "author": "Santiago G. Marín <santiago@finaldevstudio.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "./node_modules/karma/bin/karma start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FinalDevStudio/ng-pagination.git"
+  },
+  "keywords": [
+    "angular",
+    "pagination",
+    "directive"
+  ],
+  "bugs": {
+    "url": "https://github.com/FinalDevStudio/ng-pagination/issues"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "del": "^1.2.0",
+    "express": "^4.14.0",
+    "gulp": "^3.9.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.2.0",
+    "jasmine-core": "^2.3.4",
+    "karma": "^0.12.37",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-mocha": "^1.1.1",
+    "karma-ng-html2js-preprocessor": "^1.0.0",
+    "mocha": "^3.0.2"
+  },
+  "dependencies": {}
+}
