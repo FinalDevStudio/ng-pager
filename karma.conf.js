@@ -19,7 +19,7 @@ module.exports = function (config) {
       'https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js',
       'https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-mocks.js',
 
-      'dist/ng-pagination.js',
+      'dist/ng-pager.js',
 
       'test/unit/**/*.spec.js',
       'test/unit/**/*.html'

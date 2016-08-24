@@ -108,10 +108,10 @@
   }
 
   /* Define the AngularJS module */
-  ng.module('ngPagination', [])
+  ng.module('ngPager', [])
 
   /* Define the AngularJS directive */
-  .directive('ngPagination', [
+  .directive('ngPager', [
     '$http',
 
     ngPaginationDirectiveFn

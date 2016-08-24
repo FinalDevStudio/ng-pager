@@ -1,20 +1,20 @@
-# ng-pagination
+# ng-pager
 Pagination directive for AngularJS
 
 ### Installation
 Using bower, install with this command:
 ```sh
-bower install --save ng-pagination
+bower install --save ng-pager
 ```
 
-Then add either the `dist/ng-pagination.js` for development or the `dist/ng-pagination.min.js` for production to your application scripts.
+Then add either the `dist/ng-pager.js` for development or the `dist/ng-pager.min.js` for production to your application scripts.
 
 And finally, add the `ngPagination` module to your AngularJS application dependencies.
 
 ### Usage
-Add a `<nav>` element with the `ng-pagination` attribute to your HTML with the required options:
+Add a `<nav>` element with the `ng-pager` attribute to your HTML with the required options:
 ```html
-<nav ng-pagination ngp-template-url='<String:URL>' ngp-count-url='<String:URL>' ngp-pager='<Function>' ngp-start-page='<Number>' ngp-page-count='<Number>'>
+<nav ng-pager ngp-template-url='<String:URL>' ngp-count-url='<String:URL>' ngp-pager='<Function>' ngp-start-page='<Number>' ngp-page-count='<Number>'>
 </nav>
 ```
 
@@ -22,7 +22,7 @@ Add a `<nav>` element with the `ng-pagination` attribute to your HTML with the r
 
 Attribute | Value | Description
 ---|---|---
-`ng-pagination` | | This is the directive's attribute.
+`ng-pager` | | This is the directive's attribute.
 `ngp-template-url` | `String:URL` | Must be a string pointing to the template URL
 `ngp-count-url` | `String:URL` | Must be a string pointing to the count URL. This URL will be requested via `GET` and must return an integer
 `ngp-pager` | `Function` | Must be a `Function` passed by reference. It must receive a `page:Number` parameter.
@@ -37,7 +37,7 @@ This templates are optimized for [Bootstrap](http://getbootstrap.com) pagination
 #### Example directive
 In HTML:
 ```html
-<nav ng-pagination ngp-template-url='/assets/templates/pagination.html' ngp-count-url='/api/count/things' ngp-pager='pagerFunction' ngp-start-page='1' ngp-page-count='10'>
+<nav ng-pager ngp-template-url='/assets/templates/pagination.html' ngp-count-url='/api/count/things' ngp-pager='pagerFunction' ngp-start-page='1' ngp-page-count='10'>
 </nav>
 ```
 
@@ -49,7 +49,7 @@ nav.text-center(
   ngp-pager='pagerFunction',
   ngp-page-count='10',
   ngp-start-page='1',
-  ng-pagination)
+  ng-pager)
 ```
 
 #### Example template

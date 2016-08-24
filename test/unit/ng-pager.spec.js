@@ -1,10 +1,10 @@
 'use strict';
 
 /* Test the directive */
-describe('The ngPagination directive', function () {
+describe('The ngPager directive', function () {
   var element, $compile, $scope, $templateCache, $httpBackend;
 
-  beforeEach(module('ngPagination'));
+  beforeEach(module('ngPager'));
   beforeEach(module('templates'));
 
   beforeEach(inject(function ($injector) {
