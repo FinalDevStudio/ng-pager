@@ -1,0 +1,35 @@
+{
+  "title": "Angular Pagination",
+  "name": "ng-pagination",
+  "homepage": "https://github.com/FinalDevStudio/ng-pagination",
+  "description": "Pagination directive for AngularJS",
+  "authors": [
+    "Santiago G. Marín <santiago@finaldevstudio.com>"
+  ],
+  "main": [
+    "dist/ng-pagination.min.js",
+    "dist/ng-pagination.js"
+  ],
+  "keywords": [
+    "angular",
+    "pagination",
+    "directive"
+  ],
+  "license": "MIT",
+  "ignore": [
+    ".eslintrc.json",
+    ".editorconfig",
+    "karma.conf.js",
+    ".eslintignore",
+    ".jsbeautifyrc",
+    "node_modules",
+    "package.json",
+    "gulpfile.js",
+    ".travis.yml",
+    ".gitignore",
+    "LICENSE",
+    "*.log",
+    "test",
+    "src"
+  ]
+}
