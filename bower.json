@@ -7,7 +7,6 @@
     "Santiago G. Marín <santiago@finaldevstudio.com>"
   ],
   "main": [
-    "dist/ng-pager.min.js",
     "dist/ng-pager.js"
   ],
   "keywords": [

@@ -55,5 +55,5 @@
     };
     return ngPaginationDirectiveDef;
   }
-  ng.module("ngPagination", []).directive("ngPagination", [ "$http", ngPaginationDirectiveFn ]);
+  ng.module("ngPager", []).directive("ngPager", [ "$http", ngPaginationDirectiveFn ]);
 })(window);
