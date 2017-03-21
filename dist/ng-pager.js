@@ -16,6 +16,7 @@
             $scope.page = 1;
           }
           console.log("Start page: " + $scope.page);
+          console.log("Scope/PageCount: " + $scope.pageCount);
         }
       }
       function setPage(page) {

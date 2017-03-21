@@ -89,4 +89,5 @@ describe('The ngPager directive', function () {
 
     expect($scope.currentPage).to.equal(7);
   });
+
 });
