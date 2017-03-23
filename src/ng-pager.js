@@ -23,8 +23,7 @@
       function onCountSuccess(res) {
         $scope.total = parseInt(res.data || 0);
         $scope.pageCount = parseInt($attrs.ngpPageCount);
-        $scope.pages = definePages(); /*new Array(Math.ceil($scope.total / $scope.pageCount));*/
-        console.log('PAGES:', $scope.pages);
+        $scope.pages = definePages();       
 
         if ($attrs.ngpStartPage) {
           $scope.page = parseInt($attrs.ngpStartPage) || 1;
@@ -75,7 +74,7 @@
       }
 
       /**
-       * Sets dinamic list of displayed browsable pages.
+       * Returns dinamic list of browsable pages to display.
        */
       function definePages() {
         
@@ -104,76 +103,59 @@
       }
 
       /**
-       * Separates list of pages into two arrays: left and right from current page. 
-       * Then concatenates both plus current page to return an array as final output.
+       * Separates list of pages in two arrays: left and right from current page. 
+       * Steps each array, finally returns concatenation of both stepped plus current page.
        */
       function fixedPager(page, displaySize, allPages) {
-        var leftAll = [];
-        var rightAll = [];
-
-        var leftShown = [];
-        var rightShown = [];
+        
+        var splitPages = {
+          left: [],
+          right: []
+        };
 
         var zeroIndexPage = --page;
 
         for (var i = --zeroIndexPage; i >= 0; i--) {
-          leftAll.unshift(allPages[i]);
+          splitPages.left.unshift(allPages[i]);
         }
 
         for (var j = ++zeroIndexPage; j < allPages.length; j++) {
-          rightAll.push(allPages[j]);
+          splitPages.right.push(allPages[j]);
         }
 
-        var bal = balance(displaySize - 2, leftAll.length, allPages);
-        var balancePages = deployPages(bal, leftAll, rightAll);
+        var bal = balance(displaySize - 2, splitPages.left.length, allPages);
+        var balancePages = deployPages(bal, splitPages);
 
-        leftShown = balancePages.left;
+        var steppedPages = {
+          left: [],
+          right: [],
+          all: [], //.left + current + .right
+
+          join: function(currentPage) {
+            this.left.push(currentPage);
+            this.all = this.left.concat(this.right);
+          }
+        };
+
+        steppedPages.left = balancePages.left;
+        steppedPages.right = balancePages.right;
+
+        steppedPages.join(allPages[zeroIndexPage]);
+        
+        /*leftShown = balancePages.left;
         leftShown.push(allPages[zeroIndexPage]);
         rightShown = balancePages.right;
 
-        var shownPages = leftShown.concat(rightShown);
+        var shownPages = leftShown.concat(rightShown);*/
 
-        if (shownPages.length > displaySize) {
-          shownPages.splice(1, 1);
+        if (steppedPages.all.length > displaySize) {
+          steppedPages.all.splice(1, 1);
         }
 
-        return shownPages;
+        return steppedPages.all;
       }
-      
-      /**
-       * Steps through each array of pages following the left/right balance determined by the percentage of
-       * pages regarding the total. Returns two arrays containing each a selection of left and right
-       * pages to display.
-       */
-      function deployPages(balance, leftAll, rightAll) {
-        
-        var leftStep = Math.ceil(leftAll.length / balance.left);
-        var rightStep = Math.ceil(rightAll.length / balance.right);
 
-        var leftSelection = [];
-        var rightSelection = [];
-
-        for (var i = 0; i < leftAll.length; i += leftStep) {
-          leftSelection.push(leftAll[i]);
-        }
-
-        if (rightAll.length === 1) {
-          rightSelection.push(rightAll[0]);
-        } else {
-          for (var j = rightAll.length - 1; j > 0; j -= rightStep) {
-            rightSelection.unshift(rightAll[j]);
-          }
-        }
-
-        var selection = {
-          left: leftSelection,
-          right: rightSelection
-        };
-        
-        return selection;
-      }
-      
-      /**
+       /**
        * Determines the balance of pages to be shown to each the left and the right sides
        * regarding the desired total amount of pages to display.
        * */
@@ -197,7 +179,39 @@
         }
         return balanceOut;
       }
+      
+      /**
+       * Steps through each array of pages following the left/right balance. 
+       * Returns an object with two arrays of selected left and right pages to display.
+       */
+      function deployPages(balance, splitPages) {
+        
+        var leftStep = Math.ceil(splitPages.left.length / balance.left);
+        var rightStep = Math.ceil(splitPages.right.length / balance.right);
 
+        var selection = {
+          left: [],
+          right: []
+        };
+
+        var leftSelection = [];
+        var rightSelection = [];
+
+        for (var i = 0; i < splitPages.left.length; i += leftStep) {
+          selection.left.push(splitPages.left[i]);
+        }
+
+        if (splitPages.right.length === 1) {
+          selection.right.push(splitPages.right[0]);
+        } else {
+          for (var j = splitPages.right.length - 1; j > 0; j -= rightStep) {
+            selection.right.unshift(splitPages.right[j]);
+          }
+        }
+        
+        return selection;
+      }
+      
       function percent(value, total) {
         return {
           integer: Math.floor((100 * value) / total),
@@ -208,8 +222,7 @@
       $scope.setPage = setPage;
       $scope.reset = reset;
       $scope.next = next;
-      $scope.prev = prev;
-      $scope.pages = definePages;
+      $scope.prev = prev;      
       $scope.page = 1;
 
       reset();
