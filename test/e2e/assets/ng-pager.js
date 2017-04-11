@@ -1,0 +1,1 @@
+../../../dist/ng-pager.js

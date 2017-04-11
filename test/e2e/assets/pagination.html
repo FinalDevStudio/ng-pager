@@ -1,0 +1,19 @@
+<ul class="pagination">
+  <li>
+    <a id="prev" ng-click="page > 1 &amp;&amp; prev()" role="button" href="">
+      <span>&lt;</span>
+    </a>
+  </li>
+
+  <li ng-repeat="number in pages track by $index" ng-init="$page = $index + 1">
+    <a ng-attr-id="page-{{ $page }}" ng-click="page !== $page &amp;&amp; setPage($page)" role="button" href="">
+      <span class="ng-binding">{{ $page }}</span>
+    </a>
+  </li>
+
+  <li>
+    <a id="next" ng-click="page < pages.length &amp;&amp; next()" aria-label="Next" role="button" href="">
+      <span>&gt;</span>
+    </a>
+  </li>
+</ul>

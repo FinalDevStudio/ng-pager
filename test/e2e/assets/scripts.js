@@ -8,7 +8,14 @@
   ]);
 
   function UnitController($scope) {
+
+    function pager(page) {
+      console.log('Paging', page);
+    }
+
     $scope.test = 'Hello!';
+
+    $scope.pager = pager;
   }
 
   app.controller('Unit', [

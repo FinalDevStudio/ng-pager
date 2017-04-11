@@ -23,7 +23,7 @@
       function onCountSuccess(res) {
         $scope.total = parseInt(res.data || 0);
         $scope.pageCount = parseInt($attrs.ngpPageCount);
-        $scope.pages = definePages();       
+        $scope.pages = definePages();
 
         if ($attrs.ngpStartPage) {
           $scope.page = parseInt($attrs.ngpStartPage) || 1;
@@ -77,23 +77,21 @@
        * Returns dinamic list of browsable pages to display.
        */
       function definePages() {
-        
         var displaySize = (isNaN(displaySize)) ? 8 : displaySize;
         var elementsPerPage = (isNaN(elementsPerPage)) ? 10 : elementsPerPage;
-
+        var total = Math.floor($scope.total / $scope.pageCount);
         var allPages = [];
         var pages = [];
         var page = 0;
 
-        for (var i = 0, l = Math.floor($scope.total / $scope.pageCount);
-            i < l; i++) {
+        for (var i = 0, l = total; i < l; i++) {
           allPages.push(++page);
         }
 
         if ($scope.total % $scope.pageCount) {
           allPages.push(++page);
         }
-        
+
         if (allPages.length > 7) {
           pages = fixedPager($scope.page, displaySize, allPages);
           return pages;
@@ -103,17 +101,15 @@
       }
 
       /**
-       * Separates list of pages in two arrays: left and right from current page. 
+       * Separates list of pages in two arrays: left and right from current page.
        * Steps each array, finally returns concatenation of both stepped plus current page.
        */
       function fixedPager(page, displaySize, allPages) {
-        
+        var zeroIndexPage = --page;
         var splitPages = {
           left: [],
           right: []
         };
-
-        var zeroIndexPage = --page;
 
         for (var i = --zeroIndexPage; i >= 0; i--) {
           splitPages.left.unshift(allPages[i]);
@@ -131,7 +127,7 @@
           right: [],
           all: [], //.left + current + .right
 
-          join: function(currentPage) {
+          join: function (currentPage) {
             this.left.push(currentPage);
             this.all = this.left.concat(this.right);
           }
@@ -141,7 +137,7 @@
         steppedPages.right = balancePages.right;
 
         steppedPages.join(allPages[zeroIndexPage]);
-        
+
         /*leftShown = balancePages.left;
         leftShown.push(allPages[zeroIndexPage]);
         rightShown = balancePages.right;
@@ -155,16 +151,14 @@
         return steppedPages.all;
       }
 
-       /**
+      /**
        * Determines the balance of pages to be shown to each the left and the right sides
        * regarding the desired total amount of pages to display.
        * */
       function balance(displaySize, leftAllLength, allPages) {
         var percentage = percent(leftAllLength, allPages.length);
-        
         var leftBalance = Math.ceil((displaySize * percentage.integer) / 100);
         var rightBalance = Math.abs(displaySize - leftBalance);
-        
         var balanceOut = {
           left: 0,
           right: 0
@@ -177,18 +171,17 @@
           balanceOut.left = leftBalance;
           balanceOut.right = ++rightBalance;
         }
+
         return balanceOut;
       }
-      
+
       /**
-       * Steps through each array of pages following the left/right balance. 
+       * Steps through each array of pages following the left/right balance.
        * Returns an object with two arrays of selected left and right pages to display.
        */
       function deployPages(balance, splitPages) {
-        
         var leftStep = Math.ceil(splitPages.left.length / balance.left);
         var rightStep = Math.ceil(splitPages.right.length / balance.right);
-
         var selection = {
           left: [],
           right: []
@@ -205,21 +198,21 @@
             selection.right.unshift(splitPages.right[j]);
           }
         }
-        
+
         return selection;
       }
-      
+
       function percent(value, total) {
         return {
           integer: Math.floor((100 * value) / total),
           decimal: Number(String(((100 * value) / total) % 1).charAt(2))
-        }; 
+        };
       }
 
       $scope.setPage = setPage;
       $scope.reset = reset;
       $scope.next = next;
-      $scope.prev = prev;      
+      $scope.prev = prev;
       $scope.page = 1;
 
       reset();
@@ -250,16 +243,14 @@
     return ngPaginationDirectiveDef;
   }
 
-
-
   /* Define the AngularJS module */
   ng.module('ngPager', [])
 
-  /* Define the AngularJS directive */
-  .directive('ngPager', [
-    '$http',
+    /* Define the AngularJS directive */
+    .directive('ngPager', [
+      '$http',
 
-    ngPaginationDirectiveFn
-  ]);
+      ngPaginationDirectiveFn
+    ]);
 
 }(window));
