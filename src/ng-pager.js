@@ -87,7 +87,7 @@
 
         for (var i = 0, l = Math.floor($scope.total / $scope.pageCount);
             i < l; i++) {
-              allPages.push(++page);
+          allPages.push(++page);
         }
 
         if ($scope.total % $scope.pageCount) {
@@ -194,9 +194,6 @@
           right: []
         };
 
-        var leftSelection = [];
-        var rightSelection = [];
-
         for (var i = 0; i < splitPages.left.length; i += leftStep) {
           selection.left.push(splitPages.left[i]);
         }
@@ -216,7 +213,7 @@
         return {
           integer: Math.floor((100 * value) / total),
           decimal: Number(String(((100 * value) / total) % 1).charAt(2))
-        } 
+        }; 
       }
 
       $scope.setPage = setPage;
@@ -252,6 +249,8 @@
 
     return ngPaginationDirectiveDef;
   }
+
+
 
   /* Define the AngularJS module */
   ng.module('ngPager', [])
