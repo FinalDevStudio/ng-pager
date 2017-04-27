@@ -1,18 +1,33 @@
+<table class="table">
+  <tr>
+    <th>Total</th>
+    <th>Page Count</th>
+    <th>Pages</th>
+    <th>Current page</th>
+  </tr>
+  <tr>
+    <td>{{ total }}</td>
+    <td>{{ pageCount }}</td>
+    <td>{{ pages }}</td>
+    <td>{{ page }}</td>
+  </tr>
+</table>
+
 <ul class="pagination">
   <li>
-    <a id="prev" ng-click="page > 1 &amp;&amp; prev()" role="button" href="">
+    <a id="prev" ng-click="prev()" role="button" href="">
       <span>&lt;</span>
     </a>
   </li>
 
-  <li ng-repeat="number in pages track by $index" ng-init="$page = $index + 1">
-    <a ng-attr-id="page-{{ $page }}" ng-click="page !== $page &amp;&amp; setPage($page)" role="button" href="">
-      <span class="ng-binding">{{ $page }}</span>
+  <li ng-repeat="number in pages track by $index" ng-class="{ active: page === number }">
+    <a ng-attr-id="ng-pager-page-{{ number }}" ng-click="page !== number &amp;&amp; setPage(number)" role="button" href="">
+      <span class="ng-binding">{{ number }}</span>
     </a>
   </li>
 
   <li>
-    <a id="next" ng-click="page < pages.length &amp;&amp; next()" aria-label="Next" role="button" href="">
+    <a id="next" ng-click="next()" aria-label="Next" role="button" href="">
       <span>&gt;</span>
     </a>
   </li>

@@ -15,43 +15,121 @@
      * @type AngularJS Directive Link Function
      */
     function ngPaginationDirectiveLinkFn($scope, $element, $attrs) {
-      function tearNumber(inputNumber) {
-        var number = {
-          integerVal: 0,
-          decimalVal: 0,
+      /**
+       * DISPLAY SIZE MUST BE AN ODD NUMBER. IF IT'S NOT, IT WILL BE FORCED INTO THE NEXT ODD NUMBER UPWARDS.
+       */
+      function pager(elements, currentPage, elementsPerPage, displaySize) {
 
-          tear: function () {
-            this.integerVal = Math.floor(inputNumber);
-            this.decimalVal = (inputNumber % 1);
+        elementsPerPage = (isNaN(elementsPerPage)) ? 10 : elementsPerPage;
+        displaySize = (isNaN(displaySize)) ? 9 : displaySize;
+
+        if (!(displaySize % 2)) { // Check if NOT odd
+          console.log('[INFO]: displaySize of ' + displaySize + ' forced into ' + (displaySize + 1));
+          displaySize++;
+        }
+
+        var page = 0;
+        var pages = [];
+
+        for (var i = 0, l = Math.floor(elements / elementsPerPage); i < l; i++) {
+          pages.push(++page);
+        }
+
+        if (elements % elementsPerPage !== 0) {
+          pages.push(++page);
+        }
+
+        if (pages.length > displaySize) {
+          var steppedPages = paginate(currentPage - 1, displaySize, pages);
+          return steppedPages;
+        } else {
+          return pages;
+        }
+      }
+
+      /**
+       *  
+       */
+      function paginate(currentIndex, displaySize, pages) {
+        currentIndex = (currentIndex < 0) ? 0 : currentIndex;
+        currentIndex = (currentIndex > (pages.length - 1)) ? (pages.length - 1) : currentIndex;
+
+        var splitPages = {
+          left: [],
+          right: [],
+
+          populate: function () {
+            var i;
+
+            if (currentIndex > 0) {
+              for (i = (currentIndex - 1); i > 0; i--) {
+                this.left.unshift(pages[i]);
+              }
+            }
+
+            if (currentIndex < (pages.length - 1)) {
+              for (i = (currentIndex + 1); i < (pages.length - 1); i++) {
+                this.right.push(pages[i]);
+              }
+            }
           }
         };
 
-        number.tear();
+        var steppedPages = {
+          left: [],
+          right: [],
 
-        return number;
-      }
+          leftStepping: 0,
+          rightStepping: 0,
 
-      function percent(leftLength, rightLength) {
-        var percentages = {
-          left: 0,
-          right: 0,
+          step: function (splitPages, balance) {
+            var i;
 
-          ruleOfThirds: function (length) {
-            return (100 * length) / (leftLength + rightLength);
-          },
+            if (balance.left > 0) {
+              this.leftStepping = Math.floor(splitPages.left.length / balance.left);
 
-          define: function () {
-            this.left = this.ruleOfThirds(leftLength);
-            this.right = this.ruleOfThirds(rightLength);
+              for (i = (splitPages.left[splitPages.left.length - 1] + 1) - this.leftStepping; this.left.length < balance.left; i = (i - this.leftStepping)) {
+                this.left.unshift(i);
+              }
+            }
+
+            if (balance.right > 0) {
+              this.rightStepping = Math.floor(splitPages.right.length / balance.right);
+
+              for (i = (splitPages.right[0] - 1) + this.rightStepping; this.right.length < balance.right; i = (i + this.rightStepping)) {
+                this.right.push(i);
+              }
+            }
           }
         };
 
-        percentages.define();
+        splitPages.populate();
 
-        return percentages;
+        var balancePercents = percent(splitPages.left.length, splitPages.right.length);
+
+        var balances = balance((currentIndex + 1), displaySize, pages.length, balancePercents);
+
+        steppedPages.step(splitPages, balances);
+
+        steppedPages.left.unshift(pages[0]);
+        steppedPages.right.push(pages[pages.length - 1]);
+
+        if (currentIndex > 0 && currentIndex < pages[pages.length - 1]) {
+          steppedPages.left.push(pages[currentIndex]);
+        }
+
+        return steppedPages.left.concat(steppedPages.right);
       }
 
+      /**
+       * 
+       * @param {*} currentPage 
+       * @param {*} wantedPages 
+       * @param {*} lastPage 
+       * @param {*} percentages 
+       */
       function balance(currentPage, wantedPages, lastPage, percentages) {
+
         var percBalance = {
           leftInt: 0,
           leftDec: 0,
@@ -99,97 +177,47 @@
         return percBalance.calculate();
       }
 
-      function paginate(currentIndex, displaySize, pages) {
-        currentIndex = (currentIndex < 0) ? 0 : currentIndex;
-        currentIndex = (currentIndex > (pages.length - 1)) ? (pages.length - 1) : currentIndex;
+      /**
+       * 
+       * @param {*} leftLength 
+       * @param {*} rightLength 
+       */
+      function percent(leftLength, rightLength) {
 
-        var splitPages = {
-          left: [],
-          right: [],
+        var percentages = {
+          left: 0,
+          right: 0,
 
-          populate: function () {
-            if (currentIndex > 0) {
-              for (var i = (currentIndex - 1); i > 0; i--) {
-                this.left.unshift(pages[i]);
-              }
-            }
+          ruleOfThree: function (length) {
+            return (100 * length) / (leftLength + rightLength);
+          },
 
-            if (currentIndex < (pages.length - 1)) {
-              for (var j = (currentIndex + 1); j < (pages.length - 1); j++) {
-                this.right.push(pages[j]);
-              }
-            }
+          define: function () {
+            this.left = this.ruleOfThree(leftLength);
+            this.right = this.ruleOfThree(rightLength);
           }
         };
 
-        var steppedPages = {
-          left: [],
-          right: [],
+        percentages.define();
 
-          leftStepping: 0,
-          rightStepping: 0,
-
-          step: function (splitPages, balance) {
-            if (balance.left > 0) {
-              this.leftStepping = Math.floor(splitPages.left.length / balance.left);
-              for (var i = (splitPages.left[splitPages.left.length - 1] + 1) - this.leftStepping; this.left.length < balance.left; i = (i - this.leftStepping)) {
-                this.left.unshift(i);
-              }
-            }
-
-            if (balance.right > 0) {
-              this.rightStepping = Math.floor(splitPages.right.length / balance.right);
-              for (var j = (splitPages.right[0] - 1) + this.rightStepping; this.right.length < balance.right; j = (j + this.rightStepping)) {
-                this.right.push(j);
-              }
-            }
-          }
-        };
-
-        splitPages.populate();
-
-        var balancePercents = percent(splitPages.left.length, splitPages.right.length);
-        var balances = balance((currentIndex + 1), displaySize, pages.length, balancePercents);
-
-        steppedPages.step(splitPages, balances);
-
-        steppedPages.left.unshift(pages[0]);
-        steppedPages.right.push(pages[pages.length - 1]);
-
-        if (currentIndex > 0 && currentIndex < pages[pages.length]) {
-          steppedPages.left.push(pages[currentIndex]);
-        }
-
-        return steppedPages.left.concat(steppedPages.right);
+        return percentages;
       }
 
-      function pager(elements, currentPage, elementsPerPage, displaySize) {
+      function tearNumber(inputNumber) {
 
-        elementsPerPage = (isNaN(elementsPerPage)) ? 10 : elementsPerPage;
-        displaySize = (isNaN(displaySize)) ? 9 : displaySize;
+        var number = {
+          integerVal: 0,
+          decimalVal: 0,
 
-        if (!(displaySize % 2)) { // Check if NOT odd
-          console.log('[INFO]: displaySize of ' + displaySize + ' forced into ' + (displaySize + 1));
-          displaySize++;
-        }
+          tear: function () {
+            this.integerVal = Math.floor(inputNumber);
+            this.decimalVal = (inputNumber % 1);
+          }
+        };
 
-        var page = 0;
-        var pages = [];
+        number.tear();
 
-        for (var i = 0, l = Math.floor(elements / elementsPerPage); i < l; i++) {
-          pages.push(++page);
-        }
-
-        if (elements % elementsPerPage !== 0) {
-          pages.push(++page);
-        }
-
-        if (pages.length > displaySize) {
-          var steppedPages = paginate(currentPage - 1, displaySize, pages);
-          return steppedPages;
-        } else {
-          return pages;
-        }
+        return number;
       }
 
       /**
@@ -226,13 +254,15 @@
       function setPage(page) {
         $scope.page = page;
         $scope.pager(page);
+
+        $scope.pages = pager($scope.total, $scope.page, $scope.pageCount);
       }
 
       /**
        * Goes to the next page.
        */
       function next() {
-        if ($scope.page < $scope.pages.length) {
+        if ($scope.page < $scope.pages[$scope.pages.length - 1]) {
           setPage(++$scope.page);
         }
       }
@@ -249,142 +279,6 @@
       function reset() {
         $http.get($attrs.ngpCountUrl)
           .then(onCountSuccess);
-      }
-
-      /**
-       * Returns dinamic list of browsable pages to display.
-       */
-      function definePages() {
-        var displaySize = (isNaN(displaySize)) ? 8 : displaySize;
-        var elementsPerPage = (isNaN(elementsPerPage)) ? 10 : elementsPerPage;
-        var total = Math.floor($scope.total / $scope.pageCount);
-        var allPages = [];
-        var pages = [];
-        var page = 0;
-
-        for (var i = 0, l = total; i < l; i++) {
-          allPages.push(++page);
-        }
-
-        if ($scope.total % $scope.pageCount) {
-          allPages.push(++page);
-        }
-
-        if (allPages.length > 7) {
-          pages = fixedPager($scope.page, displaySize, allPages);
-          return pages;
-        } else {
-          return allPages;
-        }
-      }
-
-      /**
-       * Separates list of pages in two arrays: left and right from current page.
-       * Steps each array, finally returns concatenation of both stepped plus current page.
-       */
-      function fixedPager(page, displaySize, allPages) {
-        var zeroIndexPage = --page;
-        var splitPages = {
-          left: [],
-          right: []
-        };
-
-        for (var i = --zeroIndexPage; i >= 0; i--) {
-          splitPages.left.unshift(allPages[i]);
-        }
-
-        for (var j = ++zeroIndexPage; j < allPages.length; j++) {
-          splitPages.right.push(allPages[j]);
-        }
-
-        var bal = balance(displaySize - 2, splitPages.left.length, allPages);
-        var balancePages = deployPages(bal, splitPages);
-
-        var steppedPages = {
-          left: [],
-          right: [],
-          all: [], //.left + current + .right
-
-          join: function (currentPage) {
-            this.left.push(currentPage);
-            this.all = this.left.concat(this.right);
-          }
-        };
-
-        steppedPages.left = balancePages.left;
-        steppedPages.right = balancePages.right;
-
-        steppedPages.join(allPages[zeroIndexPage]);
-
-        /*leftShown = balancePages.left;
-        leftShown.push(allPages[zeroIndexPage]);
-        rightShown = balancePages.right;
-
-        var shownPages = leftShown.concat(rightShown);*/
-
-        if (steppedPages.all.length > displaySize) {
-          steppedPages.all.splice(1, 1);
-        }
-
-        return steppedPages.all;
-      }
-
-      /**
-       * Determines the balance of pages to be shown to each the left and the right sides
-       * regarding the desired total amount of pages to display.
-       * */
-      function balance(displaySize, leftAllLength, allPages) {
-        var percentage = percent(leftAllLength, allPages.length);
-        var leftBalance = Math.ceil((displaySize * percentage.integer) / 100);
-        var rightBalance = Math.abs(displaySize - leftBalance);
-        var balanceOut = {
-          left: 0,
-          right: 0
-        };
-
-        if (percentage.decimal >= 5) {
-          balanceOut.left = ++leftBalance;
-          balanceOut.right = rightBalance;
-        } else {
-          balanceOut.left = leftBalance;
-          balanceOut.right = ++rightBalance;
-        }
-
-        return balanceOut;
-      }
-
-      /**
-       * Steps through each array of pages following the left/right balance.
-       * Returns an object with two arrays of selected left and right pages to display.
-       */
-      function deployPages(balance, splitPages) {
-        var leftStep = Math.ceil(splitPages.left.length / balance.left);
-        var rightStep = Math.ceil(splitPages.right.length / balance.right);
-        var selection = {
-          left: [],
-          right: []
-        };
-
-        for (var i = 0; i < splitPages.left.length; i += leftStep) {
-          selection.left.push(splitPages.left[i]);
-        }
-
-        if (splitPages.right.length === 1) {
-          selection.right.push(splitPages.right[0]);
-        } else {
-          for (var j = splitPages.right.length - 1; j > 0; j -= rightStep) {
-            selection.right.unshift(splitPages.right[j]);
-          }
-        }
-
-        return selection;
-      }
-
-      function percent(value, total) {
-        return {
-          integer: Math.floor((100 * value) / total),
-          decimal: Number(String(((100 * value) / total) % 1).charAt(2))
-        };
       }
 
       $scope.setPage = setPage;

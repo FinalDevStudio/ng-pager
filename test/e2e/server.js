@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/count/items', (req, res) => {
-  res.json(getRandomIntInclusive(10, 800));
+  res.json(getRandomIntInclusive(10, 3000));
 });
 
 server.listen(0, () => {
