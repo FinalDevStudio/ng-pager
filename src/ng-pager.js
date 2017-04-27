@@ -19,7 +19,6 @@
        * DISPLAY SIZE MUST BE AN ODD NUMBER. IF IT'S NOT, IT WILL BE FORCED INTO THE NEXT ODD NUMBER UPWARDS.
        */
       function pager(elements, currentPage, elementsPerPage, displaySize) {
-
         elementsPerPage = (isNaN(elementsPerPage)) ? 10 : elementsPerPage;
         displaySize = (isNaN(displaySize)) ? 9 : displaySize;
 
@@ -48,7 +47,10 @@
       }
 
       /**
-       *  
+       * 
+       * @param {*} currentIndex 
+       * @param {*} displaySize 
+       * @param {*} pages 
        */
       function paginate(currentIndex, displaySize, pages) {
         currentIndex = (currentIndex < 0) ? 0 : currentIndex;
@@ -114,7 +116,7 @@
         steppedPages.left.unshift(pages[0]);
         steppedPages.right.push(pages[pages.length - 1]);
 
-        if (currentIndex > 0 && currentIndex < pages[pages.length - 1]) {
+        if (currentIndex > 0 && (currentIndex + 1) < pages[pages.length - 1]) {
           steppedPages.left.push(pages[currentIndex]);
         }
 
@@ -127,6 +129,7 @@
        * @param {*} wantedPages 
        * @param {*} lastPage 
        * @param {*} percentages 
+       * @returns 
        */
       function balance(currentPage, wantedPages, lastPage, percentages) {
 
@@ -220,16 +223,21 @@
         return number;
       }
 
+      function generatePagesArray() {
+        $scope.pages = pager($scope.total, $scope.page, $scope.pageCount, $scope.pagesLimit);
+      }
+
       /**
        * On count request success.
        *
        * @type $http then callback.
        */
       function onCountSuccess(res) {
+        $scope.pagesLimit = parseInt($attrs.ngpPagesLimit || 7);
         $scope.total = parseInt(res.data || 0);
         $scope.pageCount = parseInt($attrs.ngpPageCount);
-        $scope.pages = pager($scope.total, $scope.page, $scope.pageCount);
-        //$scope.pages = new Array(Math.ceil($scope.total / $scope.pageCount));
+        
+        generatePagesArray();
 
         if ($attrs.ngpStartPage) {
           $scope.page = parseInt($attrs.ngpStartPage) || 1;
@@ -255,7 +263,7 @@
         $scope.page = page;
         $scope.pager(page);
 
-        $scope.pages = pager($scope.total, $scope.page, $scope.pageCount);
+        generatePagesArray();
       }
 
       /**

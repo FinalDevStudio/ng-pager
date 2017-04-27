@@ -72,7 +72,7 @@
         steppedPages.step(splitPages, balances);
         steppedPages.left.unshift(pages[0]);
         steppedPages.right.push(pages[pages.length - 1]);
-        if (currentIndex > 0 && currentIndex < pages[pages.length - 1]) {
+        if (currentIndex > 0 && currentIndex + 1 < pages[pages.length - 1]) {
           steppedPages.left.push(pages[currentIndex]);
         }
         return steppedPages.left.concat(steppedPages.right);
@@ -142,10 +142,14 @@
         number.tear();
         return number;
       }
+      function generatePagesArray() {
+        $scope.pages = pager($scope.total, $scope.page, $scope.pageCount, $scope.pagesLimit);
+      }
       function onCountSuccess(res) {
+        $scope.pagesLimit = parseInt($attrs.ngpPagesLimit || 7);
         $scope.total = parseInt(res.data || 0);
         $scope.pageCount = parseInt($attrs.ngpPageCount);
-        $scope.pages = pager($scope.total, $scope.page, $scope.pageCount);
+        generatePagesArray();
         if ($attrs.ngpStartPage) {
           $scope.page = parseInt($attrs.ngpStartPage) || 1;
           if ($scope.page > $scope.pages.length) {
@@ -160,7 +164,7 @@
       function setPage(page) {
         $scope.page = page;
         $scope.pager(page);
-        $scope.pages = pager($scope.total, $scope.page, $scope.pageCount);
+        generatePagesArray();
       }
       function next() {
         if ($scope.page < $scope.pages[$scope.pages.length - 1]) {
