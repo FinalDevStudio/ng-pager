@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html ng-app="App">
+  <head>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
+    <meta charset="UTF-8">
+  </head>
+
+  <body>
+    <main class="container">
+      <section ng-controller="Unit">
+        <h1 class="page-header" ng-bind="test"></h1>
+        <p>Here's some paginated content.</p>
+        <hr>
+        <nav
+          aria-label="Page navigation"
+          class="text-center"
+          id="pager-test"
+          ngp-template-url="/assets/pagination.html"
+          ngp-count-url="/api/count/items"
+          ngp-page-count="25"
+          ngp-start-page="1"
+          ngp-pager="pager"
+          ng-pager>
+      </section>
+    </main>
+
+    <script type="text/javascript" src="https://code.angularjs.org/1.6.4/angular.min.js"></script>
+    <script type="text/javascript" src="/assets/ng-pager.js"></script>
+    <script type="text/javascript" src="/assets/scripts.js"></script>
+  </body>
+</html>

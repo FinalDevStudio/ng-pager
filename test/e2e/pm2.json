@@ -1,0 +1,7 @@
+{
+  "apps": [{
+    "name": "ng-pager-e2e",
+    "script": "server.js",
+    "watch": "server.js"
+  }]
+}

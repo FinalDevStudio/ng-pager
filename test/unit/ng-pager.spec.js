@@ -89,4 +89,15 @@ describe('The ngPager directive', function () {
 
     expect($scope.currentPage).to.equal(7);
   });
+
+  it('Should load list of pages with an array', function () {
+    $httpBackend.expectGET('/count').respond(200, 789);
+
+    $scope.$digest();
+
+    $httpBackend.flush();
+
+    expect(element.find('li').length).to.equal(10);
+  });
+
 });
