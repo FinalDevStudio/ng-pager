@@ -16,10 +16,17 @@
      */
     function ngPaginationDirectiveLinkFn($scope, $element, $attrs) {
       /**
-       * DISPLAY SIZE MUST BE AN ODD NUMBER. IF IT'S NOT, IT WILL BE FORCED INTO THE NEXT ODD NUMBER UPWARDS.
+       * Main pagination function. Determine if the smart-pagination algorithm is needed or not. Display all pages if not.
+       * 
+       * @param {Number} items Total amount of items to sort
+       * @param {Number} currentPage Non-zero based index for the current page
+       * @param {Number} itemsPerPage Amount of items to display on each page (Default: 10)
+       * @param {Number} displaySize Limit of pages to display. Must be an odd number (Default: 9)
+       * 
+       * @return {Array} List of pages the pagination element will display
        */
-      function pager(elements, currentPage, elementsPerPage, displaySize) {
-        elementsPerPage = (isNaN(elementsPerPage)) ? 10 : elementsPerPage;
+      function pager(items, currentPage, itemsPerPage, displaySize) {
+        itemsPerPage = (isNaN(itemsPerPage)) ? 10 : itemsPerPage;
         displaySize = (isNaN(displaySize)) ? 9 : displaySize;
 
         if (!(displaySize % 2)) { // Check if NOT odd
@@ -30,11 +37,11 @@
         var page = 0;
         var pages = [];
 
-        for (var i = 0, l = Math.floor(elements / elementsPerPage); i < l; i++) {
+        for (var i = 0, l = Math.floor(items / itemsPerPage); i < l; i++) {
           pages.push(++page);
         }
 
-        if (elements % elementsPerPage !== 0) {
+        if (items % itemsPerPage !== 0) {
           pages.push(++page);
         }
 
@@ -47,10 +54,13 @@
       }
 
       /**
+       * Smart-pagination algorithm function.
        * 
-       * @param {*} currentIndex 
-       * @param {*} displaySize 
-       * @param {*} pages 
+       * @param {Number} currentIndex Current page
+       * @param {Number} displaySize Limit of pages to display. Must be an odd number
+       * @param {Array} pages Array of all pages
+       * 
+       * @return {Array} Filtered list of pages to display
        */
       function paginate(currentIndex, displaySize, pages) {
         currentIndex = (currentIndex < 0) ? 0 : currentIndex;
@@ -77,10 +87,25 @@
           }
         };
 
-        var steppedPages = {
+        var results = {
           left: [],
           right: [],
+          all: [],
 
+          join: function () {
+            this.left.unshift(pages[0]);
+            this.right.push(pages[pages.length - 1]);
+
+            if (currentIndex > 0 && (currentIndex + 1) < pages[pages.length - 1]) {
+              this.left.push(pages[currentIndex]);
+            }
+
+            this.all = this.left.concat(this.right);
+            return this.all;
+          }
+        };
+
+        var steppedPages = {
           leftStepping: 0,
           rightStepping: 0,
 
@@ -90,16 +115,16 @@
             if (balance.left > 0) {
               this.leftStepping = Math.floor(splitPages.left.length / balance.left);
 
-              for (i = (splitPages.left[splitPages.left.length - 1] + 1) - this.leftStepping; this.left.length < balance.left; i = (i - this.leftStepping)) {
-                this.left.unshift(i);
+              for (i = (splitPages.left[splitPages.left.length - 1] + 1) - this.leftStepping; results.left.length < balance.left; i = (i - this.leftStepping)) {
+                results.left.unshift(i);
               }
             }
 
             if (balance.right > 0) {
               this.rightStepping = Math.floor(splitPages.right.length / balance.right);
 
-              for (i = (splitPages.right[0] - 1) + this.rightStepping; this.right.length < balance.right; i = (i + this.rightStepping)) {
-                this.right.push(i);
+              for (i = (splitPages.right[0] - 1) + this.rightStepping; results.right.length < balance.right; i = (i + this.rightStepping)) {
+                results.right.push(i);
               }
             }
           }
@@ -108,85 +133,63 @@
         splitPages.populate();
 
         var balancePercents = percent(splitPages.left.length, splitPages.right.length);
-
         var balances = balance((currentIndex + 1), displaySize, pages.length, balancePercents);
 
         steppedPages.step(splitPages, balances);
+        var output = results.join();
 
-        steppedPages.left.unshift(pages[0]);
-        steppedPages.right.push(pages[pages.length - 1]);
-
-        if (currentIndex > 0 && (currentIndex + 1) < pages[pages.length - 1]) {
-          steppedPages.left.push(pages[currentIndex]);
-        }
-
-        return steppedPages.left.concat(steppedPages.right);
+        return output;
       }
 
       /**
+       * Determine the balance of pages to the left and right judging from the current page the user is at.
        * 
-       * @param {*} currentPage 
-       * @param {*} wantedPages 
-       * @param {*} lastPage 
-       * @param {*} percentages 
-       * @returns 
+       * @param {Number} currentPage Current page the user is at
+       * @param {Number} displaySize Limit of pages to display
+       * @param {Number} lastPage Value at the last index of the pages array
+       * @param {Object} percentages Percentages object
+       * 
+       * @return {Object} Left/Right results object
        */
-      function balance(currentPage, wantedPages, lastPage, percentages) {
+      function balance(currentPage, displaySize, lastPage, percentages) {
+        displaySize = (currentPage === 1 || currentPage === lastPage) ? (displaySize - 2) : (displaySize - 3);
 
-        var percBalance = {
-          leftInt: 0,
-          leftDec: 0,
-
-          rightInt: 0,
-          rightDec: 0,
-
-          left: 0,
-          right: 0,
-
-          resWantedPages: (currentPage === 1 || currentPage === lastPage) ? (wantedPages - 2) : (wantedPages - 3),
-
-          calculate: function () {
-            this.leftInt = tearNumber(this.resWantedPages * (percentages.left / 100)).integerVal;
-            this.leftDec = tearNumber(this.resWantedPages * (percentages.left / 100)).decimalVal;
-
-            this.rightInt = tearNumber(this.resWantedPages * (percentages.right / 100)).integerVal;
-            this.rightDec = tearNumber(this.resWantedPages * (percentages.right / 100)).decimalVal;
-
-            var results = {
-              left: this.leftInt,
-              right: this.rightInt
-            };
-
-            if ((results.left + results.right) !== this.resWantedPages) {
-              if (this.leftDec === this.rightDec) {
-                if (results.left > results.right) {
-                  results.left++;
-                } else {
-                  results.right++;
-                }
-              } else {
-                if (this.leftDec > this.rightDec) {
-                  results.left++;
-                } else {
-                  results.right++;
-                }
-              }
-            }
-
-            return results;
-          }
+        var results = {
+          left: tearNumber(displaySize * (percentages.left / 100)).integerVal,
+          right: tearNumber(displaySize * (percentages.right / 100)).integerVal
         };
 
-        return percBalance.calculate();
+        var leftDecimal = tearNumber(displaySize * (percentages.left / 100)).decimalVal;
+        var rightDecimal = tearNumber(displaySize * (percentages.right / 100)).decimalVal;
+
+        if ((results.left + results.right) !== displaySize) {
+          if (leftDecimal === rightDecimal) {
+            if (results.left > results.right) {
+              results.left++;
+            } else {
+              results.right++;
+            }
+          } else {
+            if (leftDecimal > rightDecimal) {
+              results.left++;
+            } else {
+              results.right++;
+            }
+          }
+        }
+
+        return results;
       }
 
       /**
+       * Determine percentage of two arrays taking both summed as total.
        * 
-       * @param {*} leftLength 
-       * @param {*} rightLength 
+       * @param {Array} leftLength Left array
+       * @param {Array} rightLength Right array
+       * 
+       * @return {Object} Returns percentages object
        */
       function percent(leftLength, rightLength) {
-
         var percentages = {
           left: 0,
           right: 0,
@@ -206,23 +209,25 @@
         return percentages;
       }
 
-      function tearNumber(inputNumber) {
-
-        var number = {
-          integerVal: 0,
-          decimalVal: 0,
-
-          tear: function () {
-            this.integerVal = Math.floor(inputNumber);
-            this.decimalVal = (inputNumber % 1);
-          }
+      /**
+       * Separate a number into its integer and decimal parts
+       * 
+       * @param {Number} inputNumber Number to tear
+       * 
+       * @return {Object} Torn number object
+       */
+      function tearNumber(number) {
+        var tornNumber = {
+          integerVal: Math.floor(number),
+          decimalVal: (number % 1)
         };
 
-        number.tear();
-
-        return number;
+        return tornNumber;
       }
 
+      /**
+       * Re-generate on refresh or page change
+       */
       function generatePagesArray() {
         $scope.pages = pager($scope.total, $scope.page, $scope.pageCount, $scope.pagesLimit);
       }
@@ -236,7 +241,7 @@
         $scope.pagesLimit = parseInt($attrs.ngpPagesLimit || 7);
         $scope.total = parseInt(res.data || 0);
         $scope.pageCount = parseInt($attrs.ngpPageCount);
-        
+
         generatePagesArray();
 
         if ($attrs.ngpStartPage) {
