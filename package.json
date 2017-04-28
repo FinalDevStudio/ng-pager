@@ -1,6 +1,6 @@
 {
   "name": "ng-pager",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Pagination directive for AngularJS",
   "main": "dist/ng-pager.min.js",
   "homepage": "https://github.com/FinalDevStudio/ng-pager#readme",
