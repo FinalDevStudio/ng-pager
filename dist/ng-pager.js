@@ -142,8 +142,9 @@
         generatePagesArray();
         if ($attrs.ngpStartPage) {
           $scope.page = parseInt($attrs.ngpStartPage) || 1;
-          if ($scope.page > $scope.pages.length) {
-            $scope.page = $scope.pages.length;
+          var lastPage = $scope.pages[$scope.pages.length - 1];
+          if ($scope.page > lastPage) {
+            $scope.page = lastPage;
           }
           if ($scope.page < 1) {
             $scope.page = 1;
