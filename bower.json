@@ -4,7 +4,8 @@
   "homepage": "https://github.com/FinalDevStudio/ng-pager",
   "description": "Pagination directive for AngularJS",
   "authors": [
-    "Santiago G. Marín <santiago@finaldevstudio.com>"
+    "Santiago G. Marín <santiago@finaldevstudio.com>",
+    "Germán Antonio Magaña <german@finaldevstudio.com>"
   ],
   "main": [
     "dist/ng-pager.js"
@@ -30,6 +31,9 @@
     "LICENSE",
     "*.log",
     "test",
-    "src"
+    "src",
+    "**/.*",
+    "bower_components",
+    "tests"
   ]
 }
