@@ -151,6 +151,7 @@
           }
           console.log("Start page: " + $scope.page);
         }
+        generatePagesArray();
       }
       function setPage(page) {
         $scope.page = page;

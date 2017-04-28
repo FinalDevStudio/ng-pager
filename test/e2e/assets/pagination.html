@@ -21,13 +21,13 @@
   </li>
 
   <li ng-repeat="number in pages track by $index" ng-class="{ active: page === number }">
-    <a ng-attr-id="ng-pager-page-{{ number }}" ng-click="page !== number &amp;&amp; setPage(number)" role="button" href="">
+    <a ng-attr-id="ng-pager-page-{{ number }}" ng-click="setPage(number)" role="button" href="">
       <span class="ng-binding">{{ number }}</span>
     </a>
   </li>
 
   <li>
-    <a id="next" ng-click="next()" aria-label="Next" role="button" href="">
+    <a id="next" ng-click="next()" role="button" href="">
       <span>&gt;</span>
     </a>
   </li>

@@ -259,6 +259,8 @@
 
           console.log('Start page: ' + $scope.page);
         }
+
+        generatePagesArray();
       }
 
       /**
