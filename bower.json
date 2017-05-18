@@ -1,7 +1,7 @@
 {
   "title": "Angular Pagination",
   "name": "ng-pager",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "homepage": "https://github.com/FinalDevStudio/ng-pager",
   "description": "Pagination directive for AngularJS",
   "authors": [
