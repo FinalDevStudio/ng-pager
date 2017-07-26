@@ -15,7 +15,7 @@
 
 <ul class="pagination">
   <li>
-    <a id="prev" ng-click="prev()" role="button" href="">
+    <a id="prev" ng-click="prev()" role="button" href="" ng-class="{ disabled: firstPage }">
       <span>&lt;</span>
     </a>
   </li>
@@ -27,7 +27,7 @@
   </li>
 
   <li>
-    <a id="next" ng-click="next()" role="button" href="">
+    <a id="next" ng-click="next()" role="button" href="" ng-class="{ disabled: lastPage }">
       <span>&gt;</span>
     </a>
   </li>
