@@ -112,8 +112,8 @@
       }
       function percent(leftLength, rightLength) {
         var percentages = {
-          left: 0,
           right: 0,
+          left: 0,
           ruleOfThree: function(length) {
             return 100 * length / (leftLength + rightLength);
           },
@@ -134,11 +134,14 @@
       }
       function generatePagesArray() {
         $scope.pages = pager($scope.total, $scope.page, $scope.pageCount, $scope.pagesLimit);
+        $scope.lastPage = $scope.page === $scope.pages[$scope.pages.length - 1];
+        $scope.firstPage = $scope.page === $scope.pages[0];
       }
       function onCountSuccess(res) {
         $scope.pagesLimit = parseInt($attrs.ngpPagesLimit || 7);
         $scope.total = parseInt(res.data || 0);
         $scope.pageCount = parseInt($attrs.ngpPageCount);
+        $scope.disabled = false;
         generatePagesArray();
         if ($attrs.ngpStartPage) {
           $scope.page = parseInt($attrs.ngpStartPage) || 1;
@@ -154,27 +157,36 @@
         generatePagesArray();
       }
       function setPage(page) {
-        $scope.page = page;
-        $scope.pager(page);
-        generatePagesArray();
+        page = parseInt(page);
+        console.log("Current scope page:", $scope.page);
+        console.log("Trying to set page:", page);
+        if (!isNaN(page) && $scope.page !== page) {
+          console.log("New page:", page);
+          $scope.page = page;
+          $scope.pager(page);
+          generatePagesArray();
+        }
       }
       function next() {
         if ($scope.page < $scope.pages[$scope.pages.length - 1]) {
-          setPage(++$scope.page);
+          setPage($scope.page + 1);
         }
       }
       function prev() {
-        if ($scope.page > 1) {
-          setPage(--$scope.page);
+        if ($scope.page > $scope.pages[0]) {
+          setPage($scope.page - 1);
         }
       }
       function reset() {
-        $http.get($attrs.ngpCountUrl).then(onCountSuccess);
+        $http.get($attrs.ngpCountUrl).then(onCountSuccess, ng.noop);
       }
       $scope.setPage = setPage;
       $scope.reset = reset;
       $scope.next = next;
       $scope.prev = prev;
+      $scope.firstPage = false;
+      $scope.lastPage = false;
+      $scope.disabled = true;
       $scope.page = 1;
       reset();
     }
