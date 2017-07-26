@@ -138,10 +138,9 @@
         $scope.firstPage = $scope.page === $scope.pages[0];
       }
       function onCountSuccess(res) {
-        $scope.pagesLimit = parseInt($attrs.ngpPagesLimit || 7);
-        $scope.total = parseInt(res.data || 0);
-        $scope.pageCount = parseInt($attrs.ngpPageCount);
-        $scope.disabled = false;
+        $scope.pagesLimit = parseInt($attrs.ngpPagesLimit) || 7;
+        $scope.pageCount = parseInt($attrs.ngpPageCount) || 10;
+        $scope.total = parseInt(res.data) || 0;
         generatePagesArray();
         if ($attrs.ngpStartPage) {
           $scope.page = parseInt($attrs.ngpStartPage) || 1;
@@ -186,7 +185,7 @@
       $scope.prev = prev;
       $scope.firstPage = false;
       $scope.lastPage = false;
-      $scope.disabled = true;
+      $scope.pages = [];
       $scope.page = 1;
       reset();
     }
