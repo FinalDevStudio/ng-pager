@@ -18,12 +18,9 @@ And finally, add the `ngPagination` module to your AngularJS application depende
 
 ### Usage
 
-Add a `<nav>` element with the `ng-pager` attribute to your HTML with the required options:
+Add a `<nav>` element with the `ng-pager` attribute to your HTML with the required options and then create the pagination directive's template.
 
-```html
-<nav ng-pager ngp-template-url='<String:URL>' ngp-count-url='<String:URL>' ngp-pager='<Function>' ngp-start-page='<Number>' ngp-page-count='<Number>'>
-</nav>
-```
+See the [example directive](#example-directive) and [example template](#example-template).
 
 
 ### Options
@@ -45,12 +42,12 @@ This directive does no include a template. You must provide your own via the `ng
 This templates are optimized for [Bootstrap](http://getbootstrap.com) pagination.
 
 
-#### Example directive
+#### Example Directive
 
 In HTML:
 
 ```html
-<nav ng-pager ngp-template-url='/assets/templates/pagination.html' ngp-count-url='/api/count/things' ngp-pager='pagerFunction' ngp-start-page='1' ngp-page-count='10'>
+<nav ng-pager ngp-template-url="/assets/templates/pagination.html" ngp-count-url="/api/count/things" ngp-pager="pagerFunction" ngp-start-page="1" ngp-page-count="10">
 </nav>
 ```
 
@@ -67,14 +64,14 @@ nav.text-center(
 ```
 
 
-#### Example template
+#### Example Template
 
 In HTML:
 
 ```html
 <ul class="pagination">
   <li>
-    <a id="prev" ng-click="prev()" role="button" href="">
+    <a id="prev" ng-click="prev()" role="button" href="" ng-class="{ disabled: page === 1 }">
       <span>&lt;</span>
     </a>
   </li>
@@ -86,7 +83,7 @@ In HTML:
   </li>
 
   <li>
-    <a id="next" ng-click="next()" role="button" href="">
+    <a id="next" ng-click="next()" role="button" href="" ng-class="{ disabled: page === pages[pages.length - 1] }">
       <span>&gt;</span>
     </a>
   </li>
@@ -98,7 +95,7 @@ In Pug with [FontAwesome](http://fontawesome.io) icons:
 ```pug
 ul.pagination
   li(ng-class=`{
-      disabled: (page === 1)
+      disabled: page === 1
     }`)
 
     a(ng-click='prev()',
@@ -110,7 +107,7 @@ ul.pagination
   li(
     ng-repeat='number in pages track by $index',
     ng-class=`{
-      disabled: (page === number)
+      disabled: page === number
     }`)
 
     a(ng-click='setPage(number)',
@@ -120,7 +117,7 @@ ul.pagination
       span {{ number }}
 
   li(ng-class=`{
-      disabled: (page === pages[pages.length - 1])
+      disabled: page === pages[pages.length - 1]
     }`)
 
     a(ng-click='next()',
