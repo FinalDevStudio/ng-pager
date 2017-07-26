@@ -242,10 +242,9 @@
        * @type $http then callback.
        */
       function onCountSuccess(res) {
-        $scope.pagesLimit = parseInt($attrs.ngpPagesLimit || 7);
-        $scope.total = parseInt(res.data || 0);
-        $scope.pageCount = parseInt($attrs.ngpPageCount);
-        $scope.disabled = false;
+        $scope.pagesLimit = parseInt($attrs.ngpPagesLimit) || 7;
+        $scope.pageCount = parseInt($attrs.ngpPageCount) || 10;
+        $scope.total = parseInt(res.data) || 0;
 
         generatePagesArray();
 
@@ -322,7 +321,7 @@
 
       $scope.firstPage = false;
       $scope.lastPage = false;
-      $scope.disabled = true;
+      $scope.pages = [];
       $scope.page = 1;
 
       reset();
