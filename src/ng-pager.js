@@ -17,13 +17,13 @@
     function ngPaginationDirectiveLinkFn($scope, $element, $attrs) {
       /**
        * Main pagination function. Determine if the smart-pagination algorithm is needed or not. Display all pages if not.
-       * 
+       *
        * @param {Number} items Total amount of items to sort
        * @param {Number} currentPage Non-zero based index for the current page
        * @param {Number} itemsPerPage Amount of items to display on each page (Default: 10)
        * @param {Number} displaySize Limit of pages to display. Must be an odd number (Default: 9)
-       * 
-       * @return {Array} List of pages the pagination element will display
+       *
+       * @returns {Array} List of pages the pagination element will display
        */
       function pager(items, currentPage, itemsPerPage, displaySize) {
         itemsPerPage = (isNaN(itemsPerPage)) ? 10 : itemsPerPage;
@@ -55,12 +55,12 @@
 
       /**
        * Smart-pagination algorithm function.
-       * 
+       *
        * @param {Number} currentIndex Current page
        * @param {Number} displaySize Limit of pages to display. Must be an odd number
        * @param {Array} pages Array of all pages
-       * 
-       * @return {Array} Filtered list of pages to display
+       *
+       * @returns {Array} Filtered list of pages to display
        */
       function paginate(currentIndex, displaySize, pages) {
         currentIndex = (currentIndex < 0) ? 0 : currentIndex;
@@ -143,13 +143,13 @@
 
       /**
        * Determine the balance of pages to the left and right judging from the current page the user is at.
-       * 
+       *
        * @param {Number} currentPage Current page the user is at
        * @param {Number} displaySize Limit of pages to display
        * @param {Number} lastPage Value at the last index of the pages array
        * @param {Object} percentages Percentages object
-       * 
-       * @return {Object} Left/Right results object
+       *
+       * @returns {Object} Left/Right results object
        */
       function balance(currentPage, displaySize, lastPage, percentages) {
         displaySize = (currentPage === 1 || currentPage === lastPage) ? (displaySize - 2) : (displaySize - 3);
@@ -183,11 +183,11 @@
 
       /**
        * Determine percentage of two arrays taking both summed as total.
-       * 
+       *
        * @param {Array} leftLength Left array
        * @param {Array} rightLength Right array
-       * 
-       * @return {Object} Returns percentages object
+       *
+       * @returns {Object} Returns percentages object
        */
       function percent(leftLength, rightLength) {
         var percentages = {
@@ -211,10 +211,10 @@
 
       /**
        * Separate a number into its integer and decimal parts
-       * 
+       *
        * @param {Number} inputNumber Number to tear
-       * 
-       * @return {Object} Torn number object
+       *
+       * @returns {Object} Torn number object
        */
       function tearNumber(number) {
         var tornNumber = {
