@@ -142,8 +142,14 @@ Method | Arguments | Description
 
 ### Values
 
-The directive exposes only one value to the template:
+The directive exposes these values to the template:
 
-Value | Description
----|---
-`page` | The current page.
+Value | Type | Default | Description
+---|---|----|---
+`page` | `Number` | `1` | The current page.
+`pages` | `Array` | `[]` | The array of page numbers to display.
+`firstPage` | `Boolean` | `false` | Whether the page is currently the first page.
+`lastPage` | `Boolean` | `false` | Whether the page is currently the last page.
+`pagesLimit` | `Number` | `7` | The page numbers indicator limit.
+`total` | `Number` | `0` | The total number of elements as obtained from the count URL.
+`pageCount` | `Number` | `10` | The number of elements per page.
