@@ -136,6 +136,7 @@
         var balances = balance((currentIndex + 1), displaySize, pages.length, balancePercents);
 
         steppedPages.step(splitPages, balances);
+
         var output = results.join();
 
         return output;
@@ -191,8 +192,8 @@
        */
       function percent(leftLength, rightLength) {
         var percentages = {
-          left: 0,
           right: 0,
+          left: 0,
 
           ruleOfThree: function (length) {
             return (100 * length) / (leftLength + rightLength);
@@ -230,6 +231,9 @@
        */
       function generatePagesArray() {
         $scope.pages = pager($scope.total, $scope.page, $scope.pageCount, $scope.pagesLimit);
+
+        $scope.lastPage = $scope.page === $scope.pages[$scope.pages.length - 1];
+        $scope.firstPage = $scope.page === $scope.pages[0];
       }
 
       /**
@@ -241,6 +245,7 @@
         $scope.pagesLimit = parseInt($attrs.ngpPagesLimit || 7);
         $scope.total = parseInt(res.data || 0);
         $scope.pageCount = parseInt($attrs.ngpPageCount);
+        $scope.disabled = false;
 
         generatePagesArray();
 
@@ -269,10 +274,19 @@
        * @param {Number} page The page number to set.
        */
       function setPage(page) {
-        $scope.page = page;
-        $scope.pager(page);
+        page = parseInt(page);
 
-        generatePagesArray();
+        console.log('Current scope page:', $scope.page);
+        console.log('Trying to set page:', page);
+
+        if (!isNaN(page) && $scope.page !== page) {
+          console.log('New page:', page);
+
+          $scope.page = page;
+          $scope.pager(page);
+
+          generatePagesArray();
+        }
       }
 
       /**
@@ -280,7 +294,7 @@
        */
       function next() {
         if ($scope.page < $scope.pages[$scope.pages.length - 1]) {
-          setPage(++$scope.page);
+          setPage($scope.page + 1);
         }
       }
 
@@ -288,20 +302,27 @@
        * Goes to the previous page.
        */
       function prev() {
-        if ($scope.page > 1) {
-          setPage(--$scope.page);
+        if ($scope.page > $scope.pages[0]) {
+          setPage($scope.page - 1);
         }
       }
 
+      /**
+       * Resets the counter and fetches the total count again.
+       */
       function reset() {
         $http.get($attrs.ngpCountUrl)
-          .then(onCountSuccess);
+          .then(onCountSuccess, ng.noop);
       }
 
       $scope.setPage = setPage;
       $scope.reset = reset;
       $scope.next = next;
       $scope.prev = prev;
+
+      $scope.firstPage = false;
+      $scope.lastPage = false;
+      $scope.disabled = true;
       $scope.page = 1;
 
       reset();
