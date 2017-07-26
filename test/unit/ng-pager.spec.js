@@ -91,13 +91,13 @@ describe('The ngPager directive', function () {
   });
 
   it('Should load list of pages with an array', function () {
-    $httpBackend.expectGET('/count').respond(200, 789);
+    $httpBackend.expectGET('/count').respond(200, 900);
 
     $scope.$digest();
 
     $httpBackend.flush();
 
-    expect(element.find('li').length).to.equal(10);
+    expect(element.find('li').length).to.equal(9);
   });
 
 });

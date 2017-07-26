@@ -1,18 +1,18 @@
-<ul>
+<ul class="pagination">
   <li>
-    <a id="prev" ng-click="page > 1 &amp;&amp; prev()" role="button" href="">
+    <a id="prev" ng-click="prev()" role="button" href="" ng-class="{ disabled: firstPage }">
       <span>&lt;</span>
     </a>
   </li>
 
-  <li ng-repeat="number in pages track by $index" ng-init="$page = $index + 1">
-    <a ng-attr-id="page-{{ $page }}" ng-click="page !== $page &amp;&amp; setPage($page)" role="button" href="">
-      <span class="ng-binding">{{ $page }}</span>
+  <li ng-repeat="number in pages track by $index" ng-class="{ active: page === number }">
+    <a ng-attr-id="ng-pager-page-{{ number }}" ng-click="setPage(number)" role="button" href="">
+      <span class="ng-binding">{{ number }}</span>
     </a>
   </li>
 
   <li>
-    <a id="next" ng-click="page < pages.length &amp;&amp; next()" aria-label="Next" role="button" href="">
+    <a id="next" ng-click="next()" role="button" href="" ng-class="{ disabled: lastPage }">
       <span>&gt;</span>
     </a>
   </li>
