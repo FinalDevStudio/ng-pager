@@ -1,3 +1,7 @@
+---
+### No longer maintained.
+---
+
 # ng-pager
 
 Smart and simple pagination directive for AngularJS.
